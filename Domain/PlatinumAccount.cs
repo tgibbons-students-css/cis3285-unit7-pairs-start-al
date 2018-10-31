@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    internal class PlatinumAccount : AccountBase
+    internal class PlatinumAccount : IAccount
     {
         /// <summary>
         /// 1 point for each $2 deposited
@@ -17,6 +17,17 @@ namespace Domain
         public override int CalculateRewardPoints(decimal amount)
         {
             return Math.Max((int)decimal.Ceiling((Balance / PlatinumBalanceCostPerPoint) + (amount / PlatinumTransactionCostPerPoint)), 0);
+        }
+
+       /**
+         * Add Transaction Method as required by classes implementing IAccount interface.
+        */
+        public void AddTransaction(decimal amount)
+        {
+            // only award reward points on deposit
+            if (amount>0) RewardPoints += CalculateRewardPoints(amount);
+            // always update balance
+            Balance += amount;
         }
 
         private const int PlatinumTransactionCostPerPoint = 2;
